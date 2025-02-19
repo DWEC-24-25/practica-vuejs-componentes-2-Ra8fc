@@ -1,48 +1,38 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="es">
     <head>
-        <meta charset="utf-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>VueJS: Componentes</title>
-        <meta name="author" content="">
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- TODO: Cargar CSS Bootstrap 5 (no es necesario el JS) -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
-
     <body>
 
-        <!-- TITULO DONDE ME PONGO DE AUTOR -->
-        <h1 id="autor">Autor: Raul Fernandez Carbonell</h1>
+        <h1 id="autor">
+            <strong>Autor: Raúl Fernández Carbonell</strong>
+        </h1>
 
-        <!-- HAGO LA PARTE DEL JUMBOTRON -->
-        <div class="jumbotron text-left bg-light p-3 mb-3">
-            <h1 id="title">{{ col.collection.title }}</h1>
-        </div>
+        <div id="app">
+            <!-- Título de la colección -->
+            <div class="jumbotron">
+                <h1 id="title">
+                    <strong>{{ col.title }}</strong>
+                </h1>
+            </div>
 
-        <!-- AÑADO LOS CARDS Y EL FOR PARA RECORRER LOS ITEMS -->
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-4 mb-4" v-for="(item, index) in col.collection.items" :key="index">
-                <div class="card h-100 p-4">
-                        <dl>
-                            <template v-for="(dataItem, dataIndex) in item.data" :key="dataIndex">
-                                <dt><strong>{{ dataItem.prompt }}:</strong></dt>
-                                <dd>{{ dataItem.value }}</dd>
-                            </template>
-
-                            <a :href="item.href" class="btn btn-primary" target="_blank">Ver</a>
-                        </dl>
-                </div>
+            <!-- Cards para cada item -->
+            <div class="row container mt-4 ms-4">
+                <item-data 
+                    class="col-md-4 col-sm-6 col-12"
+                    v-for="(item, index) in col.items" 
+                    :key="index" 
+                    :item="item" 
+                    :index="index"
+                />
             </div>
         </div>
-    </div>
 
-    <!-- TODO: Cargar librería Vue 3 y archivo js/script.js -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
-    <script type="module" src="./js/script.js"></script>
-        
-
+        <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+        <script type="module" src="./js/script.js"></script>
     </body>
-
 </html>
