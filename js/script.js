@@ -1,10 +1,8 @@
-// Sample data
 const server_data = {
     collection: {
         title: "Movie List",
         type: "movie",
         version: "1.0",
-
         items: [
             {
                 href: "https://en.wikipedia.org/wiki/The_Lord_of_the_Rings_(film_series)",
@@ -37,43 +35,81 @@ const server_data = {
     }
 };
 
-// Componente edit-form
-const EditForm = defineComponent({
-    template: `
-        <div>
-            <h2>Edit Form</h2>
-            <!-- Aquí iría el formulario de edición -->
-        </div>
-    `
-});
-
-// Componente item-data
-const ItemData = defineComponent({
-    props: {
-        item: {
-            type: Object,
-            required: true
+// Componente EditForm
+const EditForm = {
+    props: ["itemdata", "index"],
+    methods: {
+        closeForm() {
+            this.$emit("formClosed"); 
         }
     },
     template: `
-        <div>
-            <h3>{{ item.data.find(d => d.name === 'name').value }}</h3>
-            <p>{{ item.data.find(d => d.name === 'description').value }}</p>
-            <p><strong>Director:</strong> {{ item.data.find(d => d.name === 'director').value }}</p>
-            <p><strong>Release Date:</strong> {{ item.data.find(d => d.name === 'datePublished').value }}</p>
-            <a :href="item.href" target="_blank">More Info</a>
+        <div class="card p-3">
+            <h2>Editar Película</h2>
+            <form>
+                <div v-for="(item, index) in itemdata" :key="index" class="mb-3">
+                    <label class="form-label">
+                        {{ item.prompt }}
+                    </label>
+                    <input 
+                        v-model="item.value" 
+                        class="form-control">
+                </div>
+                
+                <button type="button" class="btn btn-secondary mt-3" @click="closeForm">Cerrar</button>
+            </form>
         </div>
     `
-});
+};
+
+// Componente ItemData
+const ItemData = {
+    props: {
+        item: Object,
+        index: Number
+    },
+    data() {
+        return {
+            isEditing: false 
+        };
+    },
+    methods: {
+        toggleEditFormVisibility() {
+            this.isEditing = !this.isEditing; 
+        }
+    },
+    template: `
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    
+                    <div v-if="!isEditing">
+                        <h3>{{ item.data.find(d => d.name === 'name').value }}</h3>
+                        <p>{{ item.data.find(d => d.name === 'description').value }}</p>
+                        <p><strong>Director:</strong> {{ item.data.find(d => d.name === 'director').value }}</p>
+                        <p><strong>Release Date:</strong> {{ item.data.find(d => d.name === 'datePublished').value }}</p>
+                        <a :href="item.href" target="_blank" class="btn btn-primary">Ver</a>
+                        <button @click="toggleEditFormVisibility" class="btn btn-warning ms-2">Editar</button>
+                    </div>
+
+                    <edit-form 
+                        v-if="isEditing"
+                        :itemdata="item.data" 
+                        :index="index"
+                        @formClosed="toggleEditFormVisibility">
+                    </edit-form>
+
+                </div>
+            </div>
+        </div>
+    `
+};
 
 // Crear la aplicación Vue
-const app = createApp({
+const app = Vue.createApp({
     setup() {
-        const col = reactive(server_data.collection);
-
-        return {
-            col
-        };
+        const col = Vue.reactive(server_data.collection);
+        return { col };
     }
 });
 
